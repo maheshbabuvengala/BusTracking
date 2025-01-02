@@ -11,7 +11,7 @@ const io = socketIo(server);
 
 // MongoDB Connection
 mongoose
-  .connect("mongodb://localhost:27017/busLocationDB", {
+  .connect("mongodb+srv://maheshvengala4321:X9W5oKKgvWeMRG6C@cluster0.hukis.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
