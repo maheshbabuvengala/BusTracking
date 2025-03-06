@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const http = require("http");
 const socketIo = require("socket.io");
 const bodyParser = require("body-parser");
+const { Client } = require("@googlemaps/google-maps-services-js");
 
 // Set up express app and server
 const app = express();
@@ -11,10 +12,13 @@ const io = socketIo(server);
 
 // MongoDB Connection
 mongoose
-  .connect("mongodb+srv://maheshvengala4321:X9W5oKKgvWeMRG6C@cluster0.hukis.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://maheshvengala4321:X9W5oKKgvWeMRG6C@cluster0.hukis.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
 
@@ -31,6 +35,9 @@ const BusLocation = mongoose.model("BusLocation", busLocationSchema);
 
 // Middleware for parsing JSON bodies
 app.use(bodyParser.json());
+
+// Google Maps API Client
+const googleMapsClient = new Client({});
 
 // API to update bus location
 app.post("/bus-location", async (req, res) => {
@@ -58,20 +65,31 @@ app.post("/bus-location", async (req, res) => {
 });
 
 // API to get bus location by bus number
-// app.get("/bus-location/:busNumber", async (req, res) => {
-//   const busNumber = req.params.busNumber;
+app.get("/bus-location/:busNumber", async (req, res) => {
+  const busNumber = req.params.busNumber;
 
-//   try {
-//     const bus = await BusLocation.findOne({ busNumber });
-//     if (bus) {
-//       res.status(200).json(bus.location);
-//     } else {
-//       res.status(404).send("Bus not found");
-//     }
-//   } catch (err) {
-//     res.status(500).send("Error fetching location: " + err);
-//   }
-// });
+  try {
+    const bus = await BusLocation.findOne({ busNumber });
+    if (bus) {
+      // Use Google Maps API to get address from coordinates
+      const response = await googleMapsClient.reverseGeocode({
+        params: {
+          latlng: `${bus.location.latitude},${bus.location.longitude}`,
+          key: "AIzaSyC3jXkPZ86lwI0t_vVXiDWV-3_KenC588E",
+        },
+        timeout: 1000, // milliseconds
+      });
+
+      const address = response.data.results[0].formatted_address;
+
+      res.status(200).json({ location: bus.location, address });
+    } else {
+      res.status(404).send("Bus not found");
+    }
+  } catch (err) {
+    res.status(500).send("Error fetching location: " + err);
+  }
+});
 
 app.get("/bus-location/all", async (req, res) => {
   try {
