@@ -26,13 +26,6 @@ mongoose
       useUnifiedTopology: true,
     }
   )
-  .connect(
-    "mongodb+srv://maheshvengala4321:X9W5oKKgvWeMRG6C@cluster0.hukis.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
 
