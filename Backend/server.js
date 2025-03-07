@@ -91,10 +91,11 @@ app.get("/bus-location/:busNumber", async (req, res) => {
   }
 });
 
-app.get("/bus-location", async (req, res) => {
+app.get("/bus-location-all", async (req, res) => {
   try {
     console.log("Fetching bus locations...");
     const buses = await BusLocation.find({});
+    console.log("Bus locations fetched:", buses);
 
     if (!buses || buses.length === 0) {
       return res.status(404).json({ message: "No bus locations found" });
