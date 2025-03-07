@@ -85,8 +85,8 @@ app.post("/bus-location", async (req, res) => {
 });
 
 // API to get bus location by bus number
-app.get("/bus-location/:busNumber", async (req, res) => {
-  const busNumber = req.params.busNumber;
+// app.get("/bus-location/:busNumber", async (req, res) => {
+//   const busNumber = req.params.busNumber;
 app.get("/bus-location/:busNumber", async (req, res) => {
   const busNumber = req.params.busNumber;
 
