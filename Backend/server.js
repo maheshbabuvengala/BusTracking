@@ -26,6 +26,13 @@ mongoose
       useUnifiedTopology: true,
     }
   )
+  .connect(
+    "mongodb+srv://maheshvengala4321:X9W5oKKgvWeMRG6C@cluster0.hukis.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
 
@@ -80,6 +87,8 @@ app.post("/bus-location", async (req, res) => {
 // API to get bus location by bus number
 app.get("/bus-location/:busNumber", async (req, res) => {
   const busNumber = req.params.busNumber;
+app.get("/bus-location/:busNumber", async (req, res) => {
+  const busNumber = req.params.busNumber;
 
   try {
     const bus = await BusLocation.findOne({ busNumber });
@@ -108,7 +117,14 @@ app.get("/bus-location/:busNumber", async (req, res) => {
 app.get("/bus-location-all", async (req, res) => {
   try {
     console.log("Fetching bus locations...");
+    console.log("Fetching bus locations...");
     const buses = await BusLocation.find({});
+    console.log("Bus locations fetched:", buses);
+
+    if (!buses || buses.length === 0) {
+      return res.status(404).json({ message: "No bus locations found" });
+    }
+
     console.log("Bus locations fetched:", buses);
 
     if (!buses || buses.length === 0) {
