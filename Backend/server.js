@@ -91,15 +91,15 @@ app.get("/bus-location/:busNumber", async (req, res) => {
   }
 });
 
-app.get("/bus-location/all", async (req, res) => {
+app.get("/bus-location", async (req, res) => {
   try {
     console.log("Fetching bus locations...");
     const buses = await BusLocation.find({});
     console.log("Bus locations fetched:", buses);
 
-    // if (!buses || buses.length === 0) {
-    //   return res.status(404).json({ message: "No bus locations found" });
-    // }
+    if (!buses || buses.length === 0) {
+      return res.status(404).json({ message: "No bus locations found" });
+    }
 
     res.status(200).json(buses);
   } catch (err) {
@@ -110,16 +110,16 @@ app.get("/bus-location/all", async (req, res) => {
   }
 });
 
-app.get("/buses", async (req, res) => {
-  try {
-    const buses = await BusLocation.find();
-    res.status(200).json({ success: true, data: buses });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server Error", error: error.message });
-  }
-});
+// app.get("/buses", async (req, res) => {
+//   try {
+//     const buses = await BusLocation.find();
+//     res.status(200).json({ success: true, data: buses });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ success: false, message: "Server Error", error: error.message });
+//   }
+// });
 
 // Set up WebSocket for real-time updates
 io.on("connection", (socket) => {
