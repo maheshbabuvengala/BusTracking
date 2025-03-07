@@ -94,11 +94,18 @@ app.get("/bus-location/:busNumber", async (req, res) => {
 app.get("/bus-location/all", async (req, res) => {
   try {
     const buses = await BusLocation.find({});
+    
+    if (!buses || buses.length === 0) {
+      return res.status(404).json({ message: "No bus locations found" });
+    }
+
     res.status(200).json(buses);
   } catch (err) {
-    res.status(500).send("Error fetching bus locations: " + err);
+    console.error("Error fetching bus locations:", err);
+    res.status(500).json({ message: "Error fetching bus locations", error: err.message });
   }
 });
+
 
 // Set up WebSocket for real-time updates
 io.on("connection", (socket) => {
